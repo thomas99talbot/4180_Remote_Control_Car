@@ -9,6 +9,7 @@
 #include "mbed.h"
 #include "rtos.h"
 #include "Motor.h"
+#define brake_value 0.1
 
 
 Serial blue(p28, p27); 
@@ -29,11 +30,12 @@ void speed_control(void)
 {  
     while(1)
     {
-        
+        pc.printf("Setting the right_speed to %f\r\n", right_speed); 
+        pc.printf("Setting the left_speed to %f\r\n", left_speed); 
         right.speed(right_speed); 
         left.speed(left_speed); 
         
-        Thread::wait(500); 
+        Thread::wait(200); 
     }  
 }
     
@@ -61,7 +63,40 @@ int main() {
                 if (blue.getc()==char(~('!' + 'B' + bnum + bhit))) { //checksum OK?
                     switch(bnum)
                     {
-                        
+                        case '3': 
+                            if(bhit == '1')
+                            {
+                                //apply brakes, decreasing the speed by 0.1 
+                                //brakes cannot change the direction 
+                                if(forward)
+                                {
+                                    //apply brakes to forward motion
+                                    if(right_speed>0.01)
+                                    {
+                                        right_speed = right_speed  - brake_value; 
+                                    }
+                                    if(left_speed > 0.01)
+                                    {
+                                        left_speed = left_speed - brake_value; 
+                                    }
+                                }
+                                else
+                                {
+                                    //apply brakes in reverse motion 
+                                    
+                                    if(right_speed < -0.01)
+                                    {
+                                        right_speed = right_speed + brake_value; 
+                                    }
+                                    if(left_speed < -0.01)
+                                    {
+                                        left_speed = left_speed +brake_value; 
+                                    }
+                            
+                                } //end if-else block on forward
+                            }//end if-else block on bhit
+                            break;  
+                                    
                         case '5':
                             //Up arrow - increase forward speed 
                             if(bhit == '1')
@@ -112,7 +147,7 @@ int main() {
                                      {
                                          right_speed = right_speed -0.1; 
                                      } 
-                                     if(left_speed > 1.0) 
+                                     if(left_speed > -1.0) 
                                      {
                                          left_speed = left_speed - 0.1; 
                                      } 
@@ -122,21 +157,15 @@ int main() {
                         case '7': 
                             //left arrow 
                             if(bhit == '1') 
-                            {
-                                pc.printf("left arrow hit"); 
-                                if(forward)
-                                {
-                                    //set right wheel to 0.5 and 
-                                    //left wheel to -0.5
-                                    right_speed = 0.5; 
-                                    left_speed = -0.5; 
-                                }
-                                else
-                                {
-                                    //turning left in reverse
-                                    right_speed = -0.5; 
-                                    left_speed = 0.5; 
-                                }
+                            {   
+                                float old_right_speed = right_speed; 
+                                float old_left_speed = left_speed; 
+                                //Only apply a left turn for 2 seconds  
+                                left_speed = -1*old_right_speed;  
+                                Thread::wait(2000); 
+                                //reset the original speed  
+                                right_speed = old_right_speed; 
+                                left_speed = old_left_speed; 
                             }//end bhit if 
                                     
                             break; 
@@ -145,22 +174,15 @@ int main() {
                             //right arrow 
                             if(bhit == '1') 
                             {
-                                pc.printf("right arrow hit"); 
-                                if(forward)
-                                {
-                                    //set right wheel to -0.5 and 
-                                    //left wheel to 0.5
-                                    right_speed = -0.5; 
-                                    left_speed = 0.5; 
-                                }
-                                else
-                                {
-                                    //turning right in reverse
-                                    right_speed = 0.5; 
-                                    left_speed = -0.5; 
-                                }
-                            }//end bhit if
-                                
+                                float old_right = right_speed; 
+                                float old_left = left_speed; 
+                                //set right wheel speed to - left speed 
+                                right_speed = -1*old_left; 
+                                Thread::wait(2000); 
+                                //reset the speeds 
+                                right_speed = old_right; 
+                                left_speed = old_left; 
+                            }//end bhit if            
                             break; 
                             
                         default:
@@ -172,7 +194,6 @@ int main() {
         //Thread::wait(100); 
     }//end while loop 
 }//end main
-
 
 
 
