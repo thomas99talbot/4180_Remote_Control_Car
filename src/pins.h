@@ -5,3 +5,7 @@
 #DEFINE R_LEFT    p29 //PwmOut
 #DEFINE G_LEFT    p9  //DigitalOut
 #DEFINE G_RIGHT   p10 //DigitalOut
+#DEFINE SD_MOSI   p11 //SD
+#DEFINE SD_MISO   p12 //SD
+#DEFINE SD_SCLK   p13 //SD
+#DEFINE SD_CS     P14 //DigitalOut
