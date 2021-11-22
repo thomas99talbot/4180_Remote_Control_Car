@@ -1,6 +1,6 @@
 /*******************************************************************************
 * Author: Thomas W.  Talbot 
-* Last Date Modified: 11/20/21
+* Last Date Modified: 11/22/21
 * Purpose: This program runs on the mbed microcontroller and continually checks
 * the Adafrtuit BLE module for drive commands. 
 *******************************************************************************/
@@ -13,10 +13,12 @@
 
 
 Serial blue(p28, p27); 
-Serial pc(USBTX, USBRX); 
+//Serial pc(USBTX, USBRX); 
+RawSerial pi(USBTX, USBRX); 
 Motor right(p21, p5, p6); 
 Motor left(p22, p7, p8); 
 DigitalOut led1(LED1); 
+DigitalOut led2(LED2);
 
 volatile float right_speed =  0.0; //absolute value 0-1
 volatile float left_speed = 0.0; //absolute value 0-1 
@@ -30,30 +32,45 @@ void speed_control(void)
 {  
     while(1)
     {
-        pc.printf("Setting the right_speed to %f\r\n", right_speed); 
-        pc.printf("Setting the left_speed to %f\r\n", left_speed); 
+        //pc.printf("Setting the right_speed to %f\r\n", right_speed); 
+        //pc.printf("Setting the left_speed to %f\r\n", left_speed); 
         right.speed(right_speed); 
         left.speed(left_speed); 
         
         Thread::wait(200); 
     }  
 }
-    
 
+/*******************************************************************************
+* backup_camera - The purpose of this function is to check if the backup camera 
+* should come on every 5 seconds. 
+*******************************************************************************/    
+
+void backup_camera(void)
+{
+    while(1)
+    {
+        while(!pi.writeable()){}
+        led2 = !led2;
+        if(!forward)
+        {
+            pi.putc('1'); 
+        }    
+        Thread::wait(5000); 
+    }//end main while loop 
+}
+            
 int main() {
     Thread t1(speed_control); 
+    pi.baud(9600); 
+    Thread t2(backup_camera); 
     char bnum =0; 
     char bhit =0; 
     while(1) 
     {
-        //led1 = !1ed1; //heartbeat
-        //led1 = 0; 
-       // Thread::wait(200); 
-        //led1 = 1; 
-        //Thread::wait(200); 
         if(blue.readable() && blue.getc() == '!')
         {
-            pc.printf("Bluetooth is readable\n\r"); 
+            //pc.printf("Bluetooth is readable\n\r"); 
             if(blue.getc() == 'B')
             {
                 
@@ -101,7 +118,7 @@ int main() {
                             //Up arrow - increase forward speed 
                             if(bhit == '1')
                             {
-                                pc.printf("up arrow hit\n\r"); 
+                                //pc.printf("up arrow hit\n\r"); 
                                 if(!forward)
                                 {
                                     //just switched into forward gear
@@ -130,8 +147,9 @@ int main() {
                         case '6':
                              if(bhit == '1')
                              {
-                                 pc.printf("down arrow hit\n\r");
+                                 //pc.printf("down arrow hit\n\r");
                                  
+                                 led1 = !led1;
                                  //Down arrow - throw the car into reverse and increase 
                                  if(forward) 
                                  {
