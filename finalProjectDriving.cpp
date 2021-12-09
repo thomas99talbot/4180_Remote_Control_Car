@@ -22,7 +22,7 @@ DigitalOut led2(LED2);
 
 volatile float right_speed =  0.0; //absolute value 0-1
 volatile float left_speed = 0.0; //absolute value 0-1 
-volatile bool forward = false; //car starts in reverse gear
+volatile bool forward = true; //car starts in reverse gear
 
 /*******************************************************************************
 * speed_control - The purpose of this function is to set the speed on the left 
@@ -56,7 +56,7 @@ void backup_camera(void)
         {
             pi.putc('1'); 
         }    
-        Thread::wait(5000); 
+        Thread::wait(2500); 
     }//end main while loop 
 }
             
