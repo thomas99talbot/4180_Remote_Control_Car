@@ -1,6 +1,6 @@
 /*******************************************************************************
 * Author: Thomas W.  Talbot 
-* Last Date Modified: 11/22/21
+* Last Date Modified: 12/09/21
 * Purpose: This program runs on the mbed microcontroller and continually checks
 * the Adafrtuit BLE module for drive commands. 
 *******************************************************************************/
@@ -178,9 +178,9 @@ int main() {
                             {   
                                 float old_right_speed = right_speed; 
                                 float old_left_speed = left_speed; 
-                                //Only apply a left turn for 2 seconds  
+                                //Only apply a left turn for .75 seconds  
                                 left_speed = -1*old_right_speed;  
-                                Thread::wait(2000); 
+                                Thread::wait(500); 
                                 //reset the original speed  
                                 right_speed = old_right_speed; 
                                 left_speed = old_left_speed; 
@@ -196,7 +196,7 @@ int main() {
                                 float old_left = left_speed; 
                                 //set right wheel speed to - left speed 
                                 right_speed = -1*old_left; 
-                                Thread::wait(2000); 
+                                Thread::wait(500); 
                                 //reset the speeds 
                                 right_speed = old_right; 
                                 left_speed = old_left; 
