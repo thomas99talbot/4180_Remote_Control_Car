@@ -115,10 +115,10 @@ void indicator(void const *args) {
         }
         else if (left_blindspot | right_blindspot) {
             if (right_blindspot) {
-                set_rgb(WARN_COLOR,1);
+                set_rgb(WARN_COLOR,0);
             }
             if (left_blindspot) {
-                set_rgb(WARN_COLOR,0);
+                set_rgb(WARN_COLOR,1);
             }
         }
         else if (high_beams) {
@@ -346,32 +346,19 @@ void blind_spot(void const *args) {
                 
         status = ld1.get_distance(&distance1);
         status2 = ld2.get_distance(&distance2); 
-        while(status != VL53L0X_ERROR_NONE)
-        {   
-            ld1.get_distance(&distance1); 
-        }
-        Thread::wait(0.1); 
-        while(status2 != VL53L0X_ERROR_NONE)
-        {
-            ld2.get_distance(&distance2); 
-        }
         
         if (distance1 < threshold_mm & distance1 > 0) { 
             right_blindspot = 1;
-            led1 = 1;
         }
         else { 
             right_blindspot = 0;
-            led1 = 0;
         }
         
         if (distance2 < threshold_mm & distance2 > 0) {
             left_blindspot = 1;
-            led2 = 1;
         }
         else {
             left_blindspot = 0;
-            led2 = 0;
         }
         
         Thread::wait(0.2);
