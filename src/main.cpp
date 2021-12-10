@@ -160,7 +160,6 @@ void bluetooth(void const *args) {
     {
         if(blue.readable() && blue.getc() == '!')
         {
-            pc.printf("Bluetooth is readable\n\r"); 
             if(blue.getc() == 'B')
             {
                 
@@ -219,7 +218,6 @@ void bluetooth(void const *args) {
                             //Up arrow - increase forward speed 
                             if(bhit == '1')
                             {
-                                pc.printf("up arrow hit\n\r"); 
                                 if(!forward)
                                 {
                                     //just switched into forward gear

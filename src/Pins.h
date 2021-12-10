@@ -1,0 +1,7 @@
+/*#DEFINE AUDIO_OUT p18 //AnalogOut
+
+#DEFINE SD_MOSI   p11 //SD
+#DEFINE SD_MISO   p12 //SD
+#DEFINE SD_SCLK   p13 //SD
+#DEFINE SD_CS     P14 //DigitalOut
+*/
