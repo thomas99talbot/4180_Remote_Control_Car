@@ -27,7 +27,7 @@ DigitalOut B_right_light(p20);
 
 /* Audio output */
 #include "horn.h"
-#define SAMPLE_FREQ 16000
+#define SAMPLE_FREQ 44100
 Ticker sampletick;
 AnalogOut audio(p18);
 /* ---------------------- */
@@ -96,6 +96,7 @@ void set_rgb(int color, bool direction) {
 
 volatile bool right_blindspot = 0;
 volatile bool left_blindspot = 0;
+volatile bool high_beams = 0;
 
 void indicator(void const *args) {
     while(1) {
@@ -119,9 +120,13 @@ void indicator(void const *args) {
                 set_rgb(WARN_COLOR,0);
             }
         }
+        else if (high_beams) {
+            set_rgb(0xFFFFFF,0);
+            set_rgb(0xFFFFFF,1);
+        }
         else {
-            set_rgb(0,0);
-            set_rgb(0,1);
+            set_rgb(0x1111FF,0);
+            set_rgb(0x1111FF,1);
         }
     }
 }
@@ -146,8 +151,12 @@ void bluetooth(void const *args) {
                     {
                         case '1':
                             if (bhit == '1') {
-                                pc.printf("Pog");
                                 horn = 1;
+                            }
+                            break;
+                        case '2':
+                            if (bhit == '1') {
+                                high_beams = !high_beams;
                             }
                             break;
                         case '3': 
@@ -359,18 +368,17 @@ union short_or_char {
 union short_or_char sample;
 volatile int samples_played = 0;
 void horn_play() {
-    
-    sample.c[1] = 0;
+    sample.c[0] = 0;
     
     if (horn & (samples_played < NUM_ELEMENTS)) {
-        sample.c[0] = sound_data[samples_played];
+        sample.c[1] = sound_data[samples_played];
         audio.write_u16(sample.s);
         samples_played++;
     }
     else if (samples_played >= NUM_ELEMENTS) {
         horn = 0;
         samples_played = 0;
-        sampletick.detach();
+        
     }   
 }
 
