@@ -49,15 +49,16 @@ Motor left(p22, p7, p8);
 /* ---------------------- */
 
 /* Debug */
-Serial pc(USBTX, USBRX); 
+RawSerial pi(USBTX, USBRX); 
+//Serial pc(USBTX, USBRX); 
 DigitalOut led1(LED1); 
 DigitalOut led2(LED2);
 /* ---------------------- */
 
 
-volatile float right_speed =  0; //absolute value 0-1
-volatile float left_speed = 0; //absolute value 0-1 
-volatile bool forward = false; //car starts in reverse gear
+volatile float right_speed =  0.0; //absolute value 0-1
+volatile float left_speed = 0.0; //absolute value 0-1 
+volatile bool forward = true; //car starts in reverse gear
 
 
 volatile bool left_detect = 0;
@@ -130,6 +131,26 @@ void indicator(void const *args) {
         }
     }
 }
+
+/*******************************************************************************
+* backup_camera - The purpose of this function is to check if the backup camera 
+* should come on every 5 seconds. 
+*******************************************************************************/    
+
+void backup_camera(void const *args)
+{
+    while(1)
+    {
+        while(!pi.writeable()){}
+        led2 = !led2;
+        if(!forward)
+        {
+            pi.putc('1'); 
+        }    
+        Thread::wait(2500); 
+    }//end main while loop 
+}
+      
 
 volatile bool brakes_hit = 0;
 volatile bool horn = 0;
@@ -260,7 +281,7 @@ void bluetooth(void const *args) {
                                 float old_left_speed = left_speed; 
                                 //Only apply a left turn for 2 seconds  
                                 left_speed = -1*old_right_speed;  
-                                Thread::wait(2000); 
+                                Thread::wait(500); 
                                 //reset the original speed  
                                 right_speed = old_right_speed; 
                                 left_speed = old_left_speed; 
@@ -279,7 +300,7 @@ void bluetooth(void const *args) {
                                 float old_left = left_speed; 
                                 //set right wheel speed to - left speed 
                                 right_speed = -1*old_left; 
-                                Thread::wait(2000); 
+                                Thread::wait(500); 
                                 //reset the speeds 
                                 right_speed = old_right; 
                                 left_speed = old_left; 
@@ -383,10 +404,12 @@ void horn_play() {
 }
 
 int main() {
+    pi.baud(9600); 
     Thread t1(indicator);
     Thread t2(bluetooth);
     Thread t3(speed_control);
     Thread t4(blind_spot);
+    Thread t5(backup_camera);
     sampletick.attach(&horn_play, 1.0 / SAMPLE_FREQ);
     while(1) {
         Thread::wait(1000);
