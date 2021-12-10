@@ -51,7 +51,7 @@ The purpose of the following project was to implement common safety features tha
 | P11      | XSHUT              |                     |
 | P12      |                    | XSHUT               |
 
-![Bluetooth Module](https://github.com/thomas99talbot/4180_Remote_Control_Car/blob/mbed_Helmut/Bluefruit.png)
+![Bluetooth Module](https://github.com/thomas99talbot/4180_Remote_Control_Car/blob/mbed_Helmut/images/Bluefruit.png)
 | **Mbed** | **Adafruit Bluefruit LE UART Friend** |
 |----------|---------------------------------------|
 | Vin      | Vin                                   |
