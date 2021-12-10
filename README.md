@@ -17,7 +17,7 @@ The purpose of the following project was to implement common safety features tha
 * [RGB LED (x2)](https://www.sparkfun.com/products/16911)
 * [DC Barrel Jack](https://www.sparkfun.com/products/119)
 ## Pinouts
-![Motor Driver](https://github.com/thomas99talbot/4180_Remote_Control_Car/blob/mbed_Helmut/DualHBridge.png)
+![Motor Driver](https://github.com/thomas99talbot/4180_Remote_Control_Car/blob/mbed_Helmut/images/DualHBridge.png)
 | **Mbed** | **Dual TB6612FNG Motor Driver** |
 |------|-----------------------------|
 | Vin  | VM                          |
@@ -30,3 +30,31 @@ The purpose of the following project was to implement common safety features tha
 | P7   | BI1                         |
 | P8   | BI2                         |
 | Vout | STBY                        |
+
+![Audio Amplifier](https://github.com/thomas99talbot/4180_Remote_Control_Car/blob/mbed_Helmut/images/MonoAudioAmp.jpg)
+| **Mbed** | **TPA2005D1** | **Speaker** |
+|------|-----------|---------|
+| P18  | IN+       |         |
+| GND  | IN-       |         |
+| Vout | PWR+      |         |
+| GND  | PWR-      |         |
+|      | OUT+      | +       |
+|      | OUT-      | -       |
+
+![ToF Sensors](https://github.com/thomas99talbot/4180_Remote_Control_Car/blob/mbed_Helmut/images/ToFSensor.jpg)
+| **Mbed** | **VL53L0X (Left)** | **VL53L0X (Right)** |
+|----------|--------------------|---------------------|
+| P9       | SCL                | SCL                 |
+| P10      | SDA                | SDA                 |
+| Vin      | Vin                | Vin                 |
+| GND      | GND                | GND                 |
+| P11      | XSHUT              |                     |
+| P12      |                    | XSHUT               |
+
+![Bluetooth Module](https://github.com/thomas99talbot/4180_Remote_Control_Car/blob/mbed_Helmut/Bluefruit.png)
+| **Mbed** | **Adafruit Bluefruit LE UART Friend** |
+|----------|---------------------------------------|
+| Vin      | Vin                                   |
+| GND      | GND                                   |
+| P28      | RXI                                   |
+| P27      | TXO                                   |
