@@ -16,4 +16,17 @@ The purpose of the following project was to implement common safety features tha
 * [SparkFun Motor Driver - Dual TB6612FNG](https://www.sparkfun.com/products/14451)
 * [RGB LED (x2)](https://www.sparkfun.com/products/16911)
 * [DC Barrel Jack](https://www.sparkfun.com/products/119)
-## Schematic
+## Pinouts
+![Motor Driver](https://github.com/thomas99talbot/4180_Remote_Control_Car/blob/mbed_Helmut/DualHBridge.png)
+| **Mbed** | **Dual TB6612FNG Motor Driver** |
+|------|-----------------------------|
+| Vin  | VM                          |
+| Vout | VCC                         |
+| GND  | GND                         |
+| P21  | PWMA                        |
+| P22  | PWMB                        |
+| P5   | AI1                         |
+| P6   | AI2                         |
+| P7   | BI1                         |
+| P8   | BI2                         |
+| Vout | STBY                        |
